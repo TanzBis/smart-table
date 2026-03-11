@@ -54,11 +54,16 @@ export function initTable(settings, onAction) {
             const row = cloneTemplate(rowTemplate);
             console.log('Ключи объекта row:', Object.keys(row)); 
             Object.keys(item).forEach(key => { 
-                if(key in row.elements) {
-                    row.elements[key].textContent = item[key];
-                }
-            }); 
-            return row.container
+        // Если ключ в данных 'total_amount', а в HTML 'total' — нужно их соединить
+        let targetKey = key;
+        if (key === 'total_amount') targetKey = 'total'; 
+
+        if (targetKey in row.elements) {
+        row.elements[targetKey].textContent = item[key];
+        }
+        });
+        return row.container
+        
         });
         //выполняю первое задание, убираю строку const nextRows = []; Добавляю из 
         root.elements.rows.replaceChildren(...nextRows);

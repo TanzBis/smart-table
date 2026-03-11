@@ -3,11 +3,8 @@ import {rules, createComparison} from "../lib/compare.js";
 
 export function initSearching(searchField) {
     // 1. Убедитесь, что второй аргумент — это МАССИВ ['date', 'customer', 'seller']
-    const searchRule = rules.searchMultipleFields(
-        searchField, 
-        ['date', 'customer', 'seller'], // <-- Должен быть массив
-        false
-    );
+    const searchRule = rules.searchMultipleFields(searchField, ['date', 'customer', 'seller', 'total_amount'], false);
+
 
     const compare = createComparison({ skipEmptyTargetValues: true }, searchRule);
 
