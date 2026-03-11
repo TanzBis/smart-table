@@ -1,17 +1,24 @@
 import {rules, createComparison} from "../lib/compare.js";
 
-
 export function initSearching(searchField) {
-    // 1. Убедитесь, что второй аргумент — это МАССИВ ['date', 'customer', 'seller']
-    const searchRule = rules.searchMultipleFields(searchField, ['date', 'customer', 'seller', 'total_amount'], false);
+    // 1. Правило для поиска по нескольким полям
+    const searchRule = rules.searchMultipleFields(
+        searchField, 
+        ['date', 'customer', 'seller', 'total_amount'], 
+        false
+    );
 
-
-    const compare = createComparison({ skipEmptyTargetValues: true }, searchRule);
+    // 2. ИСПРАВЛЕНИЕ: Передаем настройки массивом, а правило — вторым массивом
+    const compare = createComparison(
+        ['skipEmptyTargetValues'], // Настройка в виде строки в массиве
+        [searchRule]               // Правило в виде массива
+    );
 
     return (data, state) => {
-        // Если в state[searchField] пусто, пропускаем фильтрацию
-        if (!state[searchField]) return data;
+        // 3. Если поле поиска пустое — возвращаем всё
+        if (!state || !state[searchField]) return data;
 
+        // 4. Фильтруем данные
         return data.filter(item => compare(item, state));
     };
 }
