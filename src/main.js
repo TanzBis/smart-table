@@ -43,6 +43,8 @@ function render(action) {
     let result = [...data]; // копируем для последующего изменения
     // @todo: использование
 
+    result = applySearching(result, state);
+    result = applyFiltering(result, state, action);
     result = applySorting(result, state, action);
     result = applyPagination(result, state, action);
 
@@ -57,6 +59,17 @@ const sampleTable = initTable({
 }, render);
 
 // @todo: инициализация
+const applySearching = initSearching('search');
+
+const applySorting = initSorting([        // Нам нужно передать сюда массив элементов, которые вызывают сортировку, чтобы изменять их визуальное представление
+    sampleTable.header.elements.sortByDate,
+    sampleTable.header.elements.sortByTotal
+]);
+
+const applyFiltering = initFiltering(sampleTable.filter.elements, {    // передаём элементы фильтра
+    searchBySeller: indexes.sellers                                    // для элемента с именем searchBySeller устанавливаем массив продавцов
+});
+
 const applyPagination = initPagination(
     sampleTable.pagination.elements,             // передаём сюда элементы пагинации, найденные в шаблоне
     (el, page, isCurrent) => {                    // и колбэк, чтобы заполнять кнопки страниц данными
@@ -68,28 +81,7 @@ const applyPagination = initPagination(
         return el;
     }
 );
-
-const applySorting = initSorting([        // Нам нужно передать сюда массив элементов, которые вызывают сортировку, чтобы изменять их визуальное представление
-    sampleTable.header.elements.sortByDate,
-    sampleTable.header.elements.sortByTotal
-]);
-
-const applyFiltering = initFiltering(sampleTable.filter.elements, {    // передаём элементы фильтра
-    searchBySeller: indexes.sellers                                    // для элемента с именем searchBySeller устанавливаем массив продавцов
-});
-
-const applySearching = function initSearching(searchField) {
-
-    const searchRule = rules.searchMultipleFields(searchField, ['date', 'customer', 'seller'], false);
-
-    const compare = createComparator({ skipEmptyTargetValues: true }, searchRule);
-
-    return (data, state) => {
-
-        return data.filter(item => compare(item, state));
-    };
-}
-
+ 
 const appRoot = document.querySelector('#app');
 appRoot.appendChild(sampleTable.container);
 
