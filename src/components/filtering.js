@@ -12,7 +12,16 @@
 
     const applyFiltering = (query, state, action) => {
         // код с обработкой очистки поля
-         
+         if (action && action.name === 'clear') {
+            // Ищем связанный инпут. В вашем HTML кнопка и инпут лежат в одном контейнере .filter-wrapper
+            const wrapper = action.closest('.filter-wrapper');
+            const input = wrapper ? wrapper.querySelector('input') : null;
+
+            if (input) {
+                input.value = ''; // Очищаем визуально в DOM
+                state[input.name] = ''; // Очищаем в объекте состояния, чтобы фильтр ниже его не подхватил
+            }
+        }
 
         // @todo: #4.5 — отфильтровать данные, используя компаратор
         const filter = {};
