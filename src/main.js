@@ -58,8 +58,9 @@ async function render(action) {
 
     const { total, items } = await api.getRecords(query); // запрашиваем данные с собранными параметрами
 
-    updatePagination(total, query); // перерисовываем пагинатор
     sampleTable.render(items);
+    
+    updatePagination(total, query); // перерисовываем пагинатор
 }
 
 const sampleTable = initTable({
